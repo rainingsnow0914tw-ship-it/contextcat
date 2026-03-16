@@ -1,0 +1,21 @@
+# ═══════════════════════════════════════════════════════════════
+# ContextCat Agent Configuration
+# Network policy to allow external API access for:
+# - Google Imagen 3 (reference image generation)
+# - Google Veo 3 (video + audio generation)
+# - Google Vertex AI (model endpoints)
+# ═══════════════════════════════════════════════════════════════
+
+network_policy:
+  include_recommended_allowed: true
+  allowed_domains:
+    # Google APIs (Imagen 3, Veo 3, Vertex AI)
+    - googleapis.com
+    - "*.googleapis.com"
+    - generativelanguage.googleapis.com
+    - aiplatform.googleapis.com
+    - us-central1-aiplatform.googleapis.com
+    - vertexai.googleapis.com
+    # Google Cloud Storage (for generated media)
+    - storage.googleapis.com
+    - "*.storage.googleapis.com"
