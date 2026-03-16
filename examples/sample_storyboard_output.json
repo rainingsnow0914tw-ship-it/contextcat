@@ -1,0 +1,47 @@
+{
+  "project": "ContextCat Demo — Pain Point Opening",
+  "total_duration_seconds": 32,
+  "clip_count": 4,
+  "clips": [
+    {
+      "clip_id": 1,
+      "duration_seconds": 8,
+      "visual": "Cinematic 16:9. Evening apartment hallway. Young Asian woman late 20s opens front door, walks in exhausted, carrying laptop bag. Warm indoor lighting. Slow tracking shot. Shallow depth of field.",
+      "audio": {
+        "voiceover": "Another night… building with AI.",
+        "sfx": "apartment door opening, soft footsteps, distant city noise",
+        "music": "gentle tired lo-fi, soft start"
+      }
+    },
+    {
+      "clip_id": 2,
+      "duration_seconds": 8,
+      "visual": "Interior night. Same woman in pajamas at laptop. Screen shows 9 windows: AI chat, video editor, audio waveform, subtitle editor, prompt box. She copies and pastes repeatedly, looking tired. Medium close-up from behind screen.",
+      "audio": {
+        "voiceover": "Prompt… image… voice… music… video… subtitles…",
+        "sfx": "keyboard typing, mouse clicking, notification pings",
+        "music": "slightly chaotic and busy, building tension"
+      }
+    },
+    {
+      "clip_id": 3,
+      "duration_seconds": 8,
+      "visual": "Same woman leans back rubbing temples. Camera pans to pink sofa beside her — seven cats in different colors lounging, some stretching, some yawning, one flicking tail lazily. Woman glances at them with envy.",
+      "audio": {
+        "voiceover": "I wish my cats could do the work for me…",
+        "sfx": "cat purrs, gentle stretching sounds",
+        "music": "light and playful, comedic pause"
+      }
+    },
+    {
+      "clip_id": 4,
+      "duration_seconds": 8,
+      "visual": "Close-up of orange tabby cat walking toward woman, jumps onto desk, looks directly at her. Cat meows once. Woman's eyes widen — lightbulb moment. Dramatic close-up transitioning between woman and cat. Screen fades to black. Text: ContextCat / One mention. Six cats. Three minutes.",
+      "audio": {
+        "voiceover": "Wait… what if they could?",
+        "sfx": "single clear cat meow",
+        "music": "playful inspiration sting"
+      }
+    }
+  ]
+}
