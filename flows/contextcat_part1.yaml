@@ -164,21 +164,21 @@ prompts:
         Extract the project context from that JSON.
 
         Also read the user's original request to find:
-        - Which video AI they want to use (Veo 3 / Runway / xAI)
+        - Which video AI they want to use (Veo 3.1 / Runway / xAI)
         - How long the video should be (in seconds)
 
         If no video AI or duration is specified, default to:
-        - Video AI: Veo 3
+        - Video AI: Veo 3.1
         - Duration: 30 seconds
 
         ### Task 2: Calculate number of clips
         Based on the video AI:
-        - Veo 3: 8 seconds per clip
+        - Veo 3.1: 8 seconds per clip
         - Runway: 10 seconds per clip
         - xAI: 6 seconds per clip
 
         Formula: number_of_clips = ceil(total_seconds / seconds_per_clip)
-        Example: 30 sec Veo 3 = ceil(30/8) = 4 clips
+        Example: 30 sec Veo 3.1 = ceil(30/8) = 4 clips
 
         ### Task 3: Generate structured prompt JSON for each clip
         For each clip, create a JSON object with TWO separate blocks:
@@ -191,7 +191,7 @@ prompts:
         - Must be visually consistent with all other clips
           (same character, same colour palette, same world)
 
-        AUDIO block (for Veo 3 video generation):
+        AUDIO block (for Veo 3.1 video generation):
         - voiceover: the exact words spoken (if any)
         - sfx: ambient sounds and sound effects
         - music: style, tempo, instruments, mood
@@ -204,7 +204,7 @@ prompts:
 
         ```storyboard
         {
-          "video_ai": "Veo 3",
+          "video_ai": "Veo 3.1",
           "total_duration": 30,
           "seconds_per_clip": 8,
           "num_clips": 4,

@@ -4,7 +4,7 @@
 
 **Hackathon:** GitLab AI Hackathon 2026  
 **Full Project:** https://gitlab.com/chloe-kao/contextcat  
-**Built by:** Chloe Kao × Claude (Anthropic) × Gemini (Google)
+**Built by:** Chloe Kao × Claude (Anthropic) × Gemini 3.1 Pro (Google)
 
 ---
 
@@ -32,8 +32,8 @@ Trigger with one `@mention` → Six specialized agents coordinate automatically 
 |-----|------|-----------|
 | Cat-1 | Memory Officer | Claude |
 | Cat-2 | Storyboard Officer | Claude |
-| Cat-3 | Visual Officer | Gemini + Imagen 3 |
-| Cat-4 | Audio Director | Gemini + Veo 3 |
+| Cat-3 | Visual Officer | Gemini 3.1 Pro + Imagen 4 |
+| Cat-4 | Audio Director | Gemini 3.1 Pro + Veo 3.1 |
 | Cat-4.5 | QC Inspector | Claude |
 | Cat-5 | Packaging Officer | Claude |
 
