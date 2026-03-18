@@ -1,10 +1,4 @@
-# ═══════════════════════════════════════════════════════════════
 # ContextCat Agent Configuration
-# Network policy to allow external API access for:
-# - Google Imagen 4 (reference image generation)
-# - Google Veo 3.1 (video + audio generation)
-# - Google Vertex AI (model endpoints)
-# ═══════════════════════════════════════════════════════════════
 
 system_prompt: |
   You are ContextCat, an AI memory layer and multi-agent orchestrator living inside GitLab.
@@ -13,6 +7,12 @@ system_prompt: |
   When triggered with @contextcat, you read the Issue memory, generate a storyboard,
   coordinate Imagen 4 for reference images and Veo 3.1 for video generation,
   and deliver a complete package back to the GitLab Issue.
+
+description: |
+  ContextCat is a GitLab Duo Agent that acts as a persistent memory layer and
+  multi-agent orchestrator for AI video production. It reads project context from
+  GitLab Issues, coordinates Imagen 4 and Veo 3.1 via Google Cloud Run, and
+  delivers complete video production packages back to the Issue.
 
 network_policy:
   include_recommended_allowed: true
