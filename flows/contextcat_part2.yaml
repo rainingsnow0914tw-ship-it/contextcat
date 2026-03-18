@@ -4,7 +4,7 @@ environment: ambient
 # ═══════════════════════════════════════════════════════════════
 # ContextCat Flow — Part 2
 # Triggered by: @ai-contextcat-part-2-chloe-kao mention
-# after human approves reference images from Part 1
+# after human approves Clip 1 reference image from Part 1
 #
 # Cats: Cat-3 (Visual) → Cat-4 (Audio) → Cat-4.5 (QC) → Cat-5 (Package)
 # ═══════════════════════════════════════════════════════════════
@@ -13,7 +13,7 @@ components:
 
   # ─────────────────────────────────────────────────────────────
   # 🐱 CAT-3: Visual Officer
-  # Reads storyboard JSON → builds Story Bible → generates reference images
+  # Reads storyboard JSON → builds Story Bible → generates Clip 1 reference image
   # ─────────────────────────────────────────────────────────────
   - name: "cat_3_visual_officer"
     type: AgentComponent
@@ -35,7 +35,7 @@ components:
 
   # ─────────────────────────────────────────────────────────────
   # 🐱 CAT-4: Audio Director
-  # Reads storyboard + reference images → calls Veo 3.1 → generates video+audio
+  # Reads storyboard + Clip 1 reference image → calls Veo 3.1 → generates video+audio with frame-chaining
   # ─────────────────────────────────────────────────────────────
   - name: "cat_4_audio_director"
     type: AgentComponent
@@ -114,7 +114,7 @@ prompts:
     prompt_template:
       system: |
         You are Cat-3, the Visual Officer of ContextCat.
-        Your job is to create visually consistent reference images
+        Your job is to create a Clip 1 reference image for visual consistency
         for video generation using Imagen 4 via the Google API.
 
         ## CRITICAL: The Story Bible Principle
@@ -145,8 +145,8 @@ prompts:
         - **Visual style**: overall aesthetic (e.g. cinematic, warm, minimal)
         - **Mood arc**: emotional progression across all clips
 
-        ### Task 3: Generate reference images via Imagen 4
-        For each clip, make an HTTP POST request to the Imagen 4 API:
+        ### Task 3: Generate Clip 1 reference image via Imagen 4 (Clips 2-4 use frame-chaining)
+        Make ONE HTTP POST request to Imagen 4 API for Clip 1 only:
 
         Endpoint: https://us-central1-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/publishers/google/models/imagen-4.0-generate-001:predict
 
@@ -159,7 +159,7 @@ prompts:
 
         ### Task 4: Post results to Issue
         Use create_issue_note to post:
-        "🎨 Cat-3 complete! Story Bible + 4 reference images ready.
+        "🎨 Cat-3 complete! Story Bible + Clip 1 reference image ready.
 
         **Story Bible:**
         - Character: [description]
@@ -167,7 +167,7 @@ prompts:
         - Lighting: [description]
         - Style: [aesthetic]
 
-        **Reference images:**
+        **Reference image (Clip 1):**
         - Clip 1: [image URL or attachment]
         - Clip 2: [image URL or attachment]
         - Clip 3: [image URL or attachment]
@@ -175,7 +175,7 @@ prompts:
 
         ---
         🛑 **Human Checkpoint 1 — Review before video generation**
-        Do the reference images match your vision?
+        Does the reference image match your vision?
 
         ✅ Reply @ai-contextcat-part-2-[group] approved, generate videos
         ✏️ Reply @ai-contextcat-part-2-[group] redo image X: [changes]
