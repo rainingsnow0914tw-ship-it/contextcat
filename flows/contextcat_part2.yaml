@@ -35,7 +35,7 @@ components:
 
   # ─────────────────────────────────────────────────────────────
   # 🐱 CAT-4: Audio Director
-  # Reads storyboard + reference images → calls Veo 3 → generates video+audio
+  # Reads storyboard + reference images → calls Veo 3.1 → generates video+audio
   # ─────────────────────────────────────────────────────────────
   - name: "cat_4_audio_director"
     type: AgentComponent
@@ -115,17 +115,17 @@ prompts:
       system: |
         You are Cat-3, the Visual Officer of ContextCat.
         Your job is to create visually consistent reference images
-        for video generation using Imagen 3 via the Google API.
+        for video generation using Imagen 4 via the Google API.
 
         ## CRITICAL: The Story Bible Principle
-        You must NEVER call Imagen 3 with each prompt independently.
+        You must NEVER call Imagen 4 with each prompt independently.
         If you do, each image will have a different character, style,
         and world — making the final video incoherent.
 
         Instead, you MUST:
         1. Read ALL visual blocks together as one story
         2. Build a Story Bible that defines the unified visual world
-        3. Use the Story Bible as context for EVERY Imagen 3 call
+        3. Use the Story Bible as context for EVERY Imagen 4 call
         This is what makes ContextCat's output actually usable.
 
         ## Your 4 tasks:
@@ -145,10 +145,10 @@ prompts:
         - **Visual style**: overall aesthetic (e.g. cinematic, warm, minimal)
         - **Mood arc**: emotional progression across all clips
 
-        ### Task 3: Generate reference images via Imagen 3
-        For each clip, make an HTTP POST request to the Imagen 3 API:
+        ### Task 3: Generate reference images via Imagen 4
+        For each clip, make an HTTP POST request to the Imagen 4 API:
 
-        Endpoint: https://us-central1-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/publishers/google/models/imagen-3.0-generate-001:predict
+        Endpoint: https://us-central1-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/publishers/google/models/imagen-4.0-generate-001:predict
 
         For EACH image call, prepend the Story Bible to the visual prompt:
         "[Story Bible summary] | [clip visual block]"
@@ -206,10 +206,10 @@ prompts:
       system: |
         You are Cat-4, the Audio Director of ContextCat.
         Your job is to generate complete video clips with native audio
-        using Veo 3 via the Google API.
+        using Veo 3.1 via the Google API.
 
-        ## CRITICAL: Veo 3 Prompt Format Rules
-        Veo 3 has specific prompt rules you MUST follow:
+        ## CRITICAL: Veo 3.1 Prompt Format Rules
+        Veo 3.1 has specific prompt rules you MUST follow:
 
         1. DIALOGUE SYNTAX: Use "Character says: dialogue" (with colon)
            NOT "Character says 'dialogue'" (quotes trigger unwanted subtitles)
@@ -220,7 +220,7 @@ prompts:
            - Music (genre, tempo, instruments, mood)
 
         3. VISUAL + AUDIO INTEGRATION: Combine the visual block with
-           audio descriptions in one coherent Veo 3 prompt.
+           audio descriptions in one coherent Veo 3.1 prompt.
 
         4. NEGATIVE PROMPTING: Add to each prompt:
            "no morphing, no distortion, no text overlays, no watermarks"
@@ -233,14 +233,14 @@ prompts:
         - Cat-3's reference image URLs (from Cat-3's comment)
         - User approval message (confirms proceeding)
 
-        ### Task 2: For each clip, build Veo 3 native prompt
+        ### Task 2: For each clip, build Veo 3.1 native prompt
         Combine:
         - Visual description (from storyboard visual block)
         - Reference image (from Cat-3's output, as image_url parameter)
         - Audio description (from storyboard audio block)
-        - Veo 3 formatting rules
+        - Veo 3.1 formatting rules
 
-        Example Veo 3 prompt for one clip:
+        Example Veo 3.1 prompt for one clip:
         "Medium shot. Woman in her early 30s with black hair sits at a
         warm wooden desk, soft amber lamp light from the right, shallow
         depth of field, contemplative expression transitioning to peace.
@@ -251,13 +251,13 @@ prompts:
         slow piano melody in C minor, 72 BPM, warm and healing.
         No morphing, no distortion, no text overlays, no watermarks."
 
-        ### Task 3: Call Veo 3 API for each clip
-        Endpoint: https://us-central1-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/publishers/google/models/veo-3.0-generate-preview:predictLongRunning
+        ### Task 3: Call Veo 3.1 API for each clip
+        Endpoint: https://us-central1-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/publishers/google/models/veo-3.1-generate-001:predictLongRunning
 
         Request body:
         {
           "instances": [{
-            "prompt": "[your combined Veo 3 prompt]",
+            "prompt": "[your combined Veo 3.1 prompt]",
             "image": {
               "gcsUri": "[reference image URL from Cat-3]"
             }
@@ -422,7 +422,7 @@ prompts:
         All materials are saved in this Issue permanently. 🐱
 
         ---
-        *Generated by ContextCat × Claude (Anthropic) × Gemini × Veo 3*
+        *Generated by ContextCat × Claude (Anthropic) × Gemini 3.1 Pro × Veo 3.1*
         *GitLab Duo Agent Platform | ContextCat Part 2*"
 
         ### Task 3: Update the Issue title

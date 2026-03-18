@@ -183,7 +183,7 @@ prompts:
         ### Task 3: Generate structured prompt JSON for each clip
         For each clip, create a JSON object with TWO separate blocks:
 
-        VISUAL block (for Imagen 3 reference image generation):
+        VISUAL block (for Imagen 4 reference image generation):
         - Pure visual description only
         - NO mention of sound, voiceover, music, or dialogue
         - Include: subject, action, setting, lighting, camera angle,
