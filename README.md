@@ -7,6 +7,15 @@
 
 ---
 
+[![GitLab Duo Agent Platform](https://img.shields.io/badge/GitLab%20Duo-Agent%20Platform-FC6D26?style=for-the-badge&logo=gitlab)](https://about.gitlab.com/gitlab-duo/agent-platform/)
+[![Google Cloud](https://img.shields.io/badge/Google_Cloud-Powered-DB4437?style=for-the-badge&logo=googlecloud&logoColor=white)](https://cloud.google.com)
+&nbsp;&nbsp;
+![Vertex AI](https://img.shields.io/badge/Vertex_AI-Powered-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
+[![Powered by Claude](https://img.shields.io/badge/Powered%20by-Claude%20(Anthropic)-6B46C1?style=for-the-badge)](https://www.anthropic.com/claude)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+
+---
+
 ## Architecture
 
 ![ContextCat Technical Architecture](architecture_v4_judge.png)
