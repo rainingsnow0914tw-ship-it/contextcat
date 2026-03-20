@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ContextCat Interactive Architecture</title>
+  <style>
+    :root {
+      --bg1:#06111f;
+      --bg2:#0f172a;
+      --panel:rgba(8,15,30,.78);
+      --line:#7dd3fc;
+      --text:#ecfeff;
+      --muted:#cbd5e1;
+      --glow:0 0 0 1px rgba(255,255,255,.08),0 20px 50px rgba(0,0,0,.35);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 15% 15%, rgba(56,189,248,.16), transparent 24%),
+        radial-gradient(circle at 85% 10%, rgba(168,85,247,.14), transparent 26%),
+        radial-gradient(circle at 80% 80%, rgba(16,185,129,.12), transparent 24%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      min-height:100vh;
+    }
+    .page { max-width: 1420px; margin:0 auto; padding:24px; }
+    .hero h1 { margin:0 0 6px; font-size: clamp(28px, 3.4vw, 48px); line-height:1.08; }
+    .hero p { margin:0; max-width:900px; color:var(--muted); font-size:15px; line-height:1.55; }
+    .badges { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+    .badge {
+      padding:7px 11px; border-radius:999px; background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08); color:#dbeafe; font-size:12px;
+    }
+    .controls { display:flex; gap:10px; flex-wrap:wrap; margin:18px 0; }
+    .controls button {
+      border:0; border-radius:14px; padding:9px 14px; font-weight:700; cursor:pointer;
+      color:white; background:rgba(255,255,255,.08); box-shadow:var(--glow); font-size:14px;
+    }
+    .controls button.active { background:linear-gradient(135deg, #0ea5e9, #8b5cf6); }
+    .layout { display:grid; grid-template-columns: minmax(680px, 1.45fr) minmax(290px, .8fr); gap:18px; align-items:start; }
+    .canvas-wrap {
+      position:relative; min-height:680px; border-radius:28px; overflow:hidden;
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); box-shadow:var(--glow);
+    }
+    .grid-bg {
+      position:absolute; inset:0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size:36px 36px;
+      pointer-events:none;
+    }
+    svg { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    .node {
+      position:absolute; width:190px; border-radius:24px; overflow:hidden; cursor:grab;
+      background:linear-gradient(180deg, rgba(8,15,30,.92), rgba(15,23,42,.88));
+      border:1px solid rgba(255,255,255,.08); box-shadow:var(--glow); user-select:none;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .node:hover { transform: translateY(-2px) scale(1.01); }
+    .node.active { border-color:rgba(125,211,252,.8); box-shadow:0 0 0 2px rgba(125,211,252,.28),0 20px 50px rgba(0,0,0,.35); }
+    .node-bar { height:6px; }
+    .node-inner { padding:12px 14px 14px; }
+    .node-top { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+    .node .small { font-size:12px; color:#cbd5e1; margin-bottom:3px; }
+    .node .title { font-size:20px; line-height:1.05; font-weight:800; letter-spacing:-0.02em; }
+    .cat-badge {
+      width:42px; height:42px; border-radius:14px; display:grid; place-items:center;
+      font-size:22px; position:relative;
+      box-shadow:0 12px 28px rgba(0,0,0,.28);
+      animation: bob 2.5s ease-in-out infinite;
+      transform-origin:center;
+      flex: 0 0 auto;
+    }
+    .cat-badge::after {
+      content:""; position:absolute; inset:-5px; border-radius:18px;
+      border:1px solid rgba(255,255,255,.12); opacity:.5;
+      animation:pulse 2.5s ease-in-out infinite;
+    }
+    .node.active .cat-badge { animation: bob .85s ease-in-out infinite, wiggle .55s ease-in-out infinite; }
+    .node.active .cat-badge::after { animation:pulse .9s ease-in-out infinite; }
+    @keyframes bob {
+      0%,100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-5px) rotate(-3deg); }
+    }
+    @keyframes wiggle {
+      0%,100% { transform: translateY(0px) rotate(-5deg); }
+      50% { transform: translateY(-3px) rotate(5deg); }
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); opacity:.35; }
+      50% { transform: scale(1.08); opacity:.75; }
+    }
+    .panel {
+      background:var(--panel); border:1px solid rgba(255,255,255,.08); border-radius:24px; overflow:hidden; box-shadow:var(--glow);
+    }
+    .panel-bar { height:6px; }
+    .panel-body { padding:18px; }
+    .label { font-size:11px; color:#94a3b8; text-transform:uppercase; letter-spacing:.08em; }
+    .value { margin-top:4px; font-size:20px; font-weight:800; line-height:1.15; letter-spacing:-0.02em; }
+    .desc { margin-top:10px; color:#d7e3ee; line-height:1.62; font-size:14px; }
+    .stack p, .judge p, .flow p { color:#d7e3ee; line-height:1.62; margin:0 0 9px; font-size:14px; }
+    .hint { color:#93c5fd; font-weight:700; }
+    .mini-list { display:grid; gap:10px; }
+    .mini-item { display:flex; gap:9px; color:#d7e3ee; line-height:1.55; font-size:13px; }
+    .dot { color:#7dd3fc; font-weight:800; }
+    .footer-note { margin-top:12px; font-size:12px; color:#94a3b8; }
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 1fr; }
+      .canvas-wrap { min-height:760px; }
+    }
+    @media (max-width: 720px) {
+      .page { padding:16px; }
+      .node { width:170px; }
+      .node .title { font-size:18px; }
+      .cat-badge { width:38px; height:38px; border-radius:12px; }
+      .hero p { font-size:14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <div class="badges">
+        <div class="badge">Interactive Architecture Demo</div>
+        <div class="badge">ContextCat</div>
+        <div class="badge">GitLab × Claude × Google</div>
+      </div>
+      <h1>ContextCat Architecture</h1>
+      <p>Interactive draft for hackathon submission: drag nodes, switch views, and inspect how memory, orchestration, generation, QC, and delivery fit together.</p>
+    </div>
+
+    <div class="controls">
+      <button class="active" data-mode="flow">Flow View</button>
+      <button data-mode="stack">Stack View</button>
+      <button data-mode="judge">Judge View</button>
+    </div>
+
+    <div class="layout">
+      <div class="canvas-wrap" id="canvasWrap">
+        <div class="grid-bg"></div>
+        <svg id="edgesSvg"></svg>
+      </div>
+
+      <div class="side">
+        <div class="panel" id="detailPanel">
+          <div class="panel-bar" id="detailBar"></div>
+          <div class="panel-body">
+            <div class="label">Selected Node</div>
+            <div class="value" id="detailTitle"></div>
+            <div class="desc" id="detailDesc"></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:16px;">
+          <div class="panel-body" id="modePanel"></div>
+        </div>
+
+        <div class="panel" style="margin-top:16px;">
+          <div class="panel-body">
+            <div class="label">Notes</div>
+            <div class="mini-list" style="margin-top:12px;">
+              <div class="mini-item"><span class="dot">✦</span><span>English-only text for hackathon form use.</span></div>
+              <div class="mini-item"><span class="dot">✦</span><span>Smaller side panel typography to avoid reading like body copy.</span></div>
+              <div class="mini-item"><span class="dot">✦</span><span>Cat-5 restored inside the visible canvas; no stray line exiting to nowhere.</span></div>
+            </div>
+            <div class="footer-note">Next upgrade: add Issue #9 proof popups or swap the emoji cats for branded icons.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const nodes = [
+  { id:'cat1', label:'Cat-1', title:'Memory Officer', x:30, y:85, emoji:'🐱', color:'linear-gradient(90deg,#f472b6,#ec4899)', detail:'Reads the issue context, checks sufficiency, and prevents the system from moving forward with weak or missing context.' },
+  { id:'issue', label:'GitLab Issue', title:'Persistent Memory', x:115, y:225, emoji:'📘', color:'linear-gradient(90deg,#fb923c,#f43f5e)', detail:'Acts as the memory substrate. User prompts, agent notes, approvals, and delivery links all live here.' },
+  { id:'cat2', label:'Cat-2', title:'Storyboard Officer', x:20, y:375, emoji:'🐈', color:'linear-gradient(90deg,#a78bfa,#7c3aed)', detail:'Turns user intent into structured clip blocks with visual logic, audio logic, and sequencing.' },
+  { id:'cat3', label:'Cat-3', title:'Visual Officer', x:355, y:355, emoji:'😺', color:'linear-gradient(90deg,#38bdf8,#06b6d4)', detail:'Uses Gemini 3.1 Pro and Imagen 4 to build a Story Bible and lock the visual world.' },
+  { id:'cat4', label:'Cat-4', title:'Audio Director', x:170, y:495, emoji:'😸', color:'linear-gradient(90deg,#34d399,#14b8a6)', detail:'Uses Veo 3.1 to generate coherent clips with native dialogue, sound effects, and music.' },
+  { id:'cat45', label:'Cat-4.5', title:'QC Inspector', x:435, y:515, emoji:'😼', color:'linear-gradient(90deg,#fbbf24,#f97316)', detail:'Checks continuity, anatomy glitches, screen direction errors, and other artifact risks.' },
+  { id:'cat5', label:'Cat-5', title:'Packaging Officer', x:690, y:225, emoji:'😽', color:'linear-gradient(90deg,#818cf8,#3b82f6)', detail:'Collects results, posts URLs back into GitLab, updates the issue, and closes the production loop.' }
+];
+
+const edges = [
+  ['issue','cat1'], ['issue','cat2'], ['cat1','cat2'],
+  ['cat2','cat3'], ['cat3','cat4'], ['cat4','cat45'], ['cat45','cat5'], ['cat5','issue']
+];
+
+const canvasWrap = document.getElementById('canvasWrap');
+const svg = document.getElementById('edgesSvg');
+const detailTitle = document.getElementById('detailTitle');
+const detailDesc = document.getElementById('detailDesc');
+const detailBar = document.getElementById('detailBar');
+const modePanel = document.getElementById('modePanel');
+let activeNode = 'issue';
+let currentMode = 'flow';
+const nodeEls = {};
+
+function renderModePanel() {
+  const html = {
+    flow: `
+      <div class="label">Flow View</div>
+      <div class="value">Production Flow</div>
+      <div class="flow" style="margin-top:10px;">
+        <p><span class="hint">Issue</span> stores memory → <span class="hint">Cat-1</span> checks context → <span class="hint">Cat-2</span> builds storyboard → <span class="hint">Cat-3</span> locks the visual world → <span class="hint">Cat-4</span> generates audiovisual clips → <span class="hint">Cat-4.5</span> runs QC → <span class="hint">Cat-5</span> packages delivery back into GitLab.</p>
+      </div>`,
+    stack: `
+      <div class="label">Stack View</div>
+      <div class="value">Technology Stack</div>
+      <div class="stack" style="margin-top:10px;">
+        <p><span class="hint">GitLab</span> hosts issue context, memory, notes, and orchestration surface.</p>
+        <p><span class="hint">Claude</span> handles reasoning-heavy tasks such as decomposition, QC, and packaging.</p>
+        <p><span class="hint">Gemini / Imagen / Veo</span> handle world-building, visual lock, and native audiovisual generation.</p>
+        <p><span class="hint">Cloud Run</span> acts as the execution bridge.</p>
+      </div>`,
+    judge: `
+      <div class="label">Judge View</div>
+      <div class="value">Why It Stands Out</div>
+      <div class="judge" style="margin-top:10px;">
+        <p><span class="hint">What it is:</span> A GitLab-native AI video production system with persistent memory.</p>
+        <p><span class="hint">Why it matters:</span> It solves fragmentation across multi-step video creation.</p>
+        <p><span class="hint">Why it wins:</span> It turns a static issue into an active orchestration workspace.</p>
+      </div>`
+  };
+  modePanel.innerHTML = html[currentMode];
+}
+
+function renderNodes() {
+  nodes.forEach(node => {
+    const el = document.createElement('div');
+    el.className = 'node';
+    el.dataset.id = node.id;
+    el.style.left = node.x + 'px';
+    el.style.top = node.y + 'px';
+    el.innerHTML = `
+      <div class="node-bar" style="background:${node.color}"></div>
+      <div class="node-inner">
+        <div class="node-top">
+          <div>
+            <div class="small">${node.label}</div>
+            <div class="title">${node.title}</div>
+          </div>
+          <div class="cat-badge" style="background:${node.color}">${node.emoji}</div>
+        </div>
+      </div>`;
+
+    el.addEventListener('click', () => setActive(node.id));
+    makeDraggable(el, node);
+    canvasWrap.appendChild(el);
+    nodeEls[node.id] = el;
+  });
+}
+
+function setActive(id) {
+  activeNode = id;
+  nodes.forEach(n => nodeEls[n.id].classList.toggle('active', n.id === id));
+  const node = nodes.find(n => n.id === id);
+  detailTitle.textContent = `${node.label} · ${node.title}`;
+  detailDesc.textContent = node.detail;
+  detailBar.style.background = node.color;
+  drawEdges();
+}
+
+function drawEdges() {
+  svg.innerHTML = `
+    <defs>
+      <linearGradient id="edgeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#67e8f9" stop-opacity="0.35"></stop>
+        <stop offset="100%" stop-color="#a78bfa" stop-opacity="0.8"></stop>
+      </linearGradient>
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3.2" result="blur"></feGaussianBlur>
+        <feMerge>
+          <feMergeNode in="blur"></feMergeNode>
+          <feMergeNode in="SourceGraphic"></feMergeNode>
+        </feMerge>
+      </filter>
+    </defs>`;
+
+  edges.forEach(([from, to]) => {
+    const a = nodes.find(n => n.id === from);
+    const b = nodes.find(n => n.id === to);
+    const x1 = a.x + (window.innerWidth < 720 ? 85 : 95);
+    const y1 = a.y + 52;
+    const x2 = b.x + (window.innerWidth < 720 ? 85 : 95);
+    const y2 = b.y + 52;
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const curve = Math.max(40, Math.min(220, Math.abs(dx) * 0.35 + Math.abs(dy) * 0.15));
+    const cx1 = x1 + (dx >= 0 ? curve : -curve);
+    const cy1 = y1;
+    const cx2 = x2 - (dx >= 0 ? curve : -curve);
+    const cy2 = y2;
+    const isActive = from === activeNode || to === activeNode;
+    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d', `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'url(#edgeGlow)');
+    path.setAttribute('stroke-width', isActive ? '4' : '2.2');
+    path.setAttribute('opacity', isActive ? '0.96' : '0.34');
+    path.setAttribute('filter', isActive ? 'url(#glow)' : '');
+    svg.appendChild(path);
+  });
+}
+
+function makeDraggable(el, node) {
+  let dragging = false;
+  let startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+  const down = (e) => {
+    dragging = true;
+    el.style.cursor = 'grabbing';
+    const point = e.touches ? e.touches[0] : e;
+    startX = point.clientX;
+    startY = point.clientY;
+    startLeft = node.x;
+    startTop = node.y;
+    e.preventDefault();
+  };
+  const move = (e) => {
+    if (!dragging) return;
+    const point = e.touches ? e.touches[0] : e;
+    const dx = point.clientX - startX;
+    const dy = point.clientY - startY;
+    const maxX = canvasWrap.clientWidth - el.offsetWidth - 8;
+    const maxY = canvasWrap.clientHeight - el.offsetHeight - 8;
+    node.x = Math.max(8, Math.min(maxX, startLeft + dx));
+    node.y = Math.max(8, Math.min(maxY, startTop + dy));
+    el.style.left = node.x + 'px';
+    el.style.top = node.y + 'px';
+    drawEdges();
+  };
+  const up = () => {
+    dragging = false;
+    el.style.cursor = 'grab';
+  };
+  el.addEventListener('mousedown', down);
+  window.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', up);
+  el.addEventListener('touchstart', down, {passive:false});
+  window.addEventListener('touchmove', move, {passive:false});
+  window.addEventListener('touchend', up);
+}
+
+document.querySelectorAll('.controls button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentMode = btn.dataset.mode;
+    renderModePanel();
+  });
+});
+
+renderNodes();
+renderModePanel();
+setActive('issue');
+window.addEventListener('resize', drawEdges);
+</script>
+</body>
+</html>
