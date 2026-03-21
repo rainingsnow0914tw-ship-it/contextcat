@@ -70,6 +70,7 @@ Result: 18 minutes · 1 sentence · complete video package
 ---
 
 ## Key Design Decisions
+![Conversational Development Environment (CDE)](cde_concept.png)
 
 **Story Bible → Frame-chaining**
 Cat-3 builds a unified Story Bible (character, palette, lighting) before any generation. Frame-chaining passes the last frame of each clip as the first frame of the next — four clips, one continuous world.
@@ -80,6 +81,7 @@ The GitLab Issue functions as the system's control plane — all orchestration i
 inside GitLab itself.
 
 **Two Human Gates**
+![Intent-Driven Compute Throttling](compute_throttling.png)
 Gate 1 sits between free (Imagen 4) and expensive (Veo 3.1) generation. Gate 2 sits before final packaging. Human judgment at every significant cost boundary.
 
 **SKILLS.md Learning Loop**
