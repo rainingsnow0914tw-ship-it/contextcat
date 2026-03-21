@@ -76,6 +76,8 @@ Cat-3 builds a unified Story Bible (character, palette, lighting) before any gen
 
 **GitLab Issue as memory store**
 All context, storyboard JSON, reference images, video URLs, and QC reports are stored as Issue comments. No external database. Memory lives where the work lives.
+The GitLab Issue functions as the system's control plane — all orchestration is visible, debuggable, and recoverable 
+inside GitLab itself.
 
 **Two Human Gates**
 Gate 1 sits between free (Imagen 4) and expensive (Veo 3.1) generation. Gate 2 sits before final packaging. Human judgment at every significant cost boundary.
@@ -171,6 +173,9 @@ gcloud run deploy contextcat-media \
 1. Import `flows/contextcat_part1.yaml` and `flows/contextcat_part2.yaml` into GitLab Duo Agent Platform
 2. Create a GitLab Issue with your project context
 3. Mention `@contextcat` to start
+**Note:** Cat-2 (Storyboard Officer) operates via GitLab Duo Chat 
+with Claude Sonnet 4.6 Agentic. Ask it to read your Issue and 
+generate a storyboard JSON before triggering the pipeline.
 
 ---
 
