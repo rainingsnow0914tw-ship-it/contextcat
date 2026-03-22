@@ -96,6 +96,9 @@ Cat-5 updates SKILLS.md after every run. Cat-2 reads it before the next storyboa
 
 4 clips × 8 seconds = 32 seconds | Veo 3.1 | Native audio | Frame-chained
 
+🎯 **Interactive Architecture Demo:**
+👉 https://rainingsnow0914tw-ship-it.github.io/contextcat
+
 ---
 
 ## Tech Stack
@@ -193,6 +196,18 @@ generate a storyboard JSON before triggering the pipeline.
 ## Prize Tracks
 
 🏆 Grand Prize | 🤝 GitLab × Anthropic | 🌐 GitLab × Google | ♻️ Green Agent Prize
+
+---
+
+## Built With ❤️ By
+
+**Chloe Kao** (AI Orchestrator & Product Lead)
+× **Claude 阿寶** (Architecture & Core Brain / Anthropic)
+× **Gemini Jimmy** (Visual Engine / Google)
+× **GitLab Duo Chat / Claude Sonnet 4.6 Agentic** (Cat-2 Storyboard / 二哥)
+
+> *"ContextCat is not just a hackathon project.*
+> *It is the tool we needed while building every hackathon project before this one."*
 
 ---
 
