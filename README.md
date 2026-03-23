@@ -16,6 +16,7 @@
 
 ---
 
+🎬 Demo Video: https://youtu.be/RPU_BohkIZg
 ## Architecture
 
 ![ContextCat Technical Architecture](architecture_v4_judge.png)
